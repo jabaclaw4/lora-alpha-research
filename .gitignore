@@ -1,0 +1,22 @@
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.ipynb_checkpoints/
+
+# Модели и чекпоинты (слишком тяжелые)
+results/checkpoints_*/
+*.bin
+*.safetensors
+*.pt
+
+# Среда
+.env
+.venv/
+env/
+
+# OS / IDE
+.DS_Store
+.idea/
+.vscode/
