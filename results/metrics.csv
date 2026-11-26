@@ -1,4 +1,4 @@
 experiment,alpha,val_loss,task_metric,grad_norm_max,loss_spike,status,trainable_params
-lora_r8_alpha_16,16,1.4971,0.6157,0.3672,False,ok,2179072
+lora_r8_alpha_16,16,1.464,0.6262,0.3203,False,ok,2179072
 lora_r8_alpha_32,32,1.4697,0.6298,1.6008,False,ok,2179072
 lora_r8_alpha_64,64,1.4663,0.6287,2.6516,False,ok,2179072
