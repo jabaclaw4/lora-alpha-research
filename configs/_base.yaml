@@ -1,11 +1,11 @@
 # Базовые настройки эксперимента
-model_name: "Qwen/Qwen2.5-1.5B-Instruct" /используем модель поменьше, чтобы точно влезла в T4 в колабе
-dataset_name: "tatsu-lab/alpaca" /легкий датасет для инструкций
+model_name: "Qwen/Qwen2.5-1.5B-Instruct" # используем модель поменьше, чтобы точно влезла в T4 в колабе
+dataset_name: "tatsu-lab/alpaca" # легкий датасет для инструкций
 max_seq_length: 512
 load_in_4bit: true
 
 # Настройки LoRA
-r: 8 /фиксируем rank, как требует задание
+r: 8 # фиксируем rank, как требует задание
 target_modules: ["q_proj", "k_proj", "v_proj", "o_proj"]
 lora_dropout: 0.05
 
@@ -16,4 +16,4 @@ gradient_accumulation_steps: 4
 num_train_epochs: 1
 logging_steps: 10
 eval_steps: 50
-max_grad_norm: 1.0 /включаем обрезку градиентов для защиты от взрывов
+max_grad_norm: 1.0 # включаем обрезку градиентов для защиты от взрывов

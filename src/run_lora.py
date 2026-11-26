@@ -52,7 +52,7 @@ def main():
     bnb_config = BitsAndBytesConfig(
         load_in_4bit=cfg["load_in_4bit"],
         bnb_4bit_quant_type="nf4",
-        bnb_4bit_compute_dtype=torch.bfloat16 if torch.cuda.is_bf16_supported() else torch.float16,
+        bnb_4bit_compute_dtype=torch.float16,
     )
 
     # Загрузка модели и токенизатора
@@ -77,6 +77,9 @@ def main():
         task_type="CAUSAL_LM"
     )
     model = get_peft_model(model, lora_config)
+    for _p in model.parameters():
+        if _p.requires_grad:
+            _p.data = _p.data.float()
     model.print_trainable_parameters()
 
     # Загрузка данных (возвращает словарь с train и test)
@@ -97,8 +100,10 @@ def main():
         max_grad_norm=cfg["max_grad_norm"],
         save_strategy="no",
         report_to="none",
-        bf16=torch.cuda.is_bf16_supported(),
-        fp16=not torch.cuda.is_bf16_supported(),
+        bf16=False,
+        fp16=True,
+        dataset_text_field="text",
+        max_length=cfg["max_seq_length"],
     )
 
     # Инициализация тренера с коллбэком профилирования
@@ -107,15 +112,17 @@ def main():
         args=training_args,
         train_dataset=train_dataset,
         eval_dataset=eval_dataset,
-        tokenizer=tokenizer,
-        dataset_text_field="text",
-        max_seq_length=cfg["max_seq_length"],
+        processing_class=tokenizer,
         compute_metrics=compute_metrics,
         preprocess_logits_for_metrics=preprocess_logits_for_metrics,
         callbacks=[ProfilingCallback()]
     )
 
     print(f"Начинаем обучение с alpha={args.alpha}...")
+    for _p in trainer.model.parameters():
+        if _p.requires_grad and _p.dtype != torch.float32:
+            _p.data = _p.data.float()
+    print("trainable dtypes:", {str(p.dtype) for p in trainer.model.parameters() if p.requires_grad})
     trainer.train()
 
     # Сохранение логов в CSV для Участника 2
